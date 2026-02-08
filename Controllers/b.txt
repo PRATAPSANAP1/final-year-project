@@ -1,0 +1,158 @@
+// bert.js
+require("dotenv").config();
+const { HfInference } = require("@huggingface/inference");
+const Candidate = require("../Model/candidate");
+const Internship = require("../Model/internships");
+
+const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY;
+const hf = new HfInference(HUGGINGFACE_API_KEY);
+
+async function getBERTEmbedding(text) {
+  try {
+    const embedding = await hf.featureExtraction({
+      model: "sentence-transformers/all-MiniLM-L6-v2",
+      inputs: [text]
+    });
+
+    console.log("BERT Embedding Response:", embedding);
+
+    if (!Array.isArray(embedding) || !Array.isArray(embedding[0])) {
+      console.error("BERT embedding failed:", embedding);
+      throw new Error("BERT embedding failed");
+    }
+
+    return embedding[0];
+  } catch (error) {
+    console.error("Error getting BERT embedding:", error);
+    throw error;
+  }
+}
+
+function cosineSimilarity(vecA, vecB) {
+  if (!vecA || !vecB || vecA.length !== vecB.length) {
+    console.error("Invalid vectors for cosine similarity");
+    return NaN;
+  }
+
+  let dot = 0, magA = 0, magB = 0;
+  for (let i = 0; i < vecA.length; i++) {
+    dot += vecA[i] * vecB[i];
+    magA += vecA[i] * vecA[i];
+    magB += vecB[i] * vecB[i];
+  }
+
+  magA = Math.sqrt(magA);
+  magB = Math.sqrt(magB);
+
+  if (magA === 0 || magB === 0) {
+    console.error("Magnitude is zero for one vector");
+    return NaN;
+  }
+
+  return dot / (magA * magB);
+}
+
+async function matchInternships(candidateEmail) {
+  try {
+    const candidate = await Candidate.findOne({ Email: candidateEmail });
+    if (!candidate) {
+      console.log("Candidate not found with email:", candidateEmail);
+      return [];
+    }
+
+    console.log("Found candidate:", candidate.Name, "Major:", candidate.Major, "Location:", candidate.Location);
+
+    // Get ALL internships first (remove strict filtering)
+    const allInternships = await Internship.find({});
+    console.log(`Total internships in database: ${allInternships.length}`);
+
+    // Filter internships more flexibly
+    const filteredInternships = allInternships.filter(internship => {
+      const locationMatch = internship.location.toLowerCase() === candidate.Location.toLowerCase();
+      
+      // Flexible stream/major matching (CS should match IT/Computer Science etc.)
+      const candidateMajor = candidate.Major.toLowerCase();
+      const internshipStream = internship.stream.toLowerCase();
+      
+      const streamMatch = 
+        candidateMajor === internshipStream ||
+        (candidateMajor === 'cs' && internshipStream === 'it') ||
+        (candidateMajor === 'it' && internshipStream === 'cs') ||
+        internshipStream.includes(candidateMajor) ||
+        candidateMajor.includes(internshipStream);
+
+      console.log(`Internship: ${internship.internshipTitle}, Location: ${internship.location}, Stream: ${internship.stream}`);
+      console.log(`Location match: ${locationMatch}, Stream match: ${streamMatch}`);
+
+      return locationMatch && streamMatch;
+    });
+
+    console.log(`After flexible filtering: ${filteredInternships.length} internships`);
+
+    if (filteredInternships.length === 0) {
+      console.log("No internships passed the location/stream filter");
+      return [];
+    }
+
+    const candidateString = `${candidate.Education} ${candidate.College} ${candidate.Major} ${candidate.Skills} ${candidate.Location}`;
+    console.log("Candidate string for BERT:", candidateString);
+    
+    const candidateEmbedding = await getBERTEmbedding(candidateString);
+    console.log("Candidate embedding length:", candidateEmbedding.length);
+
+    const results = [];
+
+    for (let internship of filteredInternships) {
+      const internshipString = `${internship.internshipTitle} ${internship.description} ${internship.skills.join(" ")} ${internship.eligibility.join(" ")}`;
+      console.log("Internship string for BERT:", internshipString);
+
+      try {
+        const internshipEmbedding = await getBERTEmbedding(internshipString);
+        console.log("Internship embedding length:", internshipEmbedding.length);
+        
+        const similarity = cosineSimilarity(candidateEmbedding, internshipEmbedding);
+        const matchPercentage = isNaN(similarity) ? 0 : similarity * 100;
+
+        console.log(`Similarity for ${internship.internshipTitle}: ${similarity}, Percentage: ${matchPercentage}%`);
+
+        results.push({
+          internship,
+          matchPercentage: matchPercentage.toFixed(2),
+        });
+      } catch (error) {
+        console.error(`Error processing internship ${internship.internshipTitle}:`, error);
+        // Continue with other internships even if one fails
+        results.push({
+          internship,
+          matchPercentage: "0.00",
+        });
+      }
+    }
+
+    results.sort((a, b) => b.matchPercentage - a.matchPercentage);
+
+    console.log(`Matching completed. Found ${results.length} results.`);
+    return results;
+  } catch (error) {
+    console.error("Error in matchInternships:", error);
+    throw error;
+  }
+}
+
+async function getMatchedInternships(req, res) {
+  try {
+    const candidateEmail = req.body.email;
+    if (!candidateEmail) {
+      return res.status(400).send("Email is required");
+    }
+
+    console.log("Matching internships for email:", candidateEmail);
+    const matched = await matchInternships(candidateEmail);
+    res.status(200).json(matched);
+  } catch (err) {
+    console.error("Error matching internships:", err);
+    res.status(500).send("Error matching internships");
+  }
+}
+
+module.exports = { getMatchedInternships };

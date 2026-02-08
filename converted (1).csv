@@ -1,0 +1,26 @@
+Company,Position,Required_Skills,Location,Stipend,Student_Name,Student_Skills,Student_Education,Student_Interest,Skills_Match_Percentage,Location_Match_Percentage,Education_Match_Percentage,Interest_Match_Percentage,Overall_Match_Percentage
+Cuvette Tech,Frontend Developer Intern,"""React.js,CSS,React Native,Next.js,Figma""",Delhi,20000,John Doe,"React,Node.js,Express,MongoDB,CSS,JavaScript",B.Tech in Computer Science,"Web Development, Open Source",66.67,100,100,100,91.67
+InnovateX,Backend Developer Intern,"""Node.js,Express,MongoDB,Python""",Mumbai,15000,Alice Smith,"Node.js,Express,Python,MySQL",B.Tech in Computer Science,Backend Development,75,0,100,100,68.75
+TechNova,AI Intern,"""Python,Machine Learning,Deep Learning,Pandas,Numpy""",Bangalore,18000,Rahul Verma,"Python,Machine Learning,OpenCV,Pandas,Numpy",B.Tech in Computer Science,AI and ML,80,0,100,100,70
+DataHive,Data Analyst Intern,"""SQL,Excel,Python,Power BI""",Delhi,12000,Priya Sharma,"SQL,Python,Tableau,Excel",B.Tech in Information Technology,Data Analytics,75,100,0,75,62.5
+NextGen Labs,Full Stack Developer Intern,"""React.js,Node.js,Express,PostgreSQL,CSS""",Hyderabad,15000,Ankit Kumar,"React,Node.js,Express,MongoDB,HTML,CSS",B.Tech in Computer Science,Web Development,80,0,100,100,70
+ByteWorks,Mobile App Intern,"""Flutter,Dart,UI/UX,Git""",Pune,10000,Riya Singh,"Flutter,Dart,UI/UX,Firebase",B.Tech in Electronics,Mobile App Development,75,0,0,100,43.75
+CodeCrafters,Backend Developer Intern,"""Java,Spring Boot,SQL,REST API""",Chennai,12000,Vikram Patel,"Java,Spring Boot,MySQL,REST API",B.Tech in Computer Science,Backend Development,75,0,100,100,68.75
+AI Minds,ML Engineer Intern,"""Python,Machine Learning,Pytorch,TensorFlow,Numpy""",Delhi,20000,Sakshi Jain,"Python,Machine Learning,Torch,TensorFlow,Pandas",B.Tech in Computer Science,AI and ML,80,100,100,100,95
+DataWave,Data Science Intern,"""Python,Pandas,NumPy,Matplotlib,Scikit-learn""",Mumbai,18000,Rohit Mehra,"Python,Pandas,NumPy,Matplotlib",B.Tech in Information Technology,Data Analytics,80,0,0,75,38.75
+TechBridge,Frontend Developer Intern,"""React.js,Vue.js,CSS,HTML,JavaScript""",Delhi,15000,Neha Gupta,"React,HTML,CSS,JavaScript",B.Tech in Computer Science,Web Development,80,100,100,100,95
+InnovEdge,AI Intern,"""Python,Deep Learning,Keras,TensorFlow,NLP""",Bangalore,20000,Aryan Sharma,"Python,Machine Learning,TensorFlow,Keras,NLP",B.Tech in Computer Science,AI and ML,80,0,100,100,70
+CloudNine,Cloud Developer Intern,"""AWS,Azure,Python,Docker,Kubernetes""",Pune,22000,Megha Deshmukh,"AWS,Docker,Python,Azure,Kubernetes",B.Tech in Computer Science,Cloud Computing,100,0,100,100,75
+ByteSolutions,Full Stack Intern,"""React.js,Node.js,Express,MongoDB,HTML,CSS""",Hyderabad,15000,Aditya Verma,"React,Node.js,Express,MongoDB,CSS,HTML",B.Tech in Computer Science,Web Development,100,0,100,100,75
+SmartApps,Mobile Developer Intern,"""React Native,Flutter,Dart,UI/UX,Git""",Delhi,18000,Shivani Kapoor,"Flutter,Dart,UI/UX,React Native",B.Tech in Electronics,Mobile App Development,80,100,0,100,70
+CodeSphere,Backend Developer Intern,"""Python,Django,REST API,SQL""",Mumbai,15000,Karan Malhotra,"Python,Django,Flask,MySQL",B.Tech in Computer Science,Backend Development,75,0,100,100,68.75
+DataMinds,Data Analyst Intern,"""SQL,Python,Excel,Power BI,Tableau""",Bangalore,12000,Rashmi Rao,"SQL,Python,Excel,Tableau",B.Tech in Information Technology,Data Analytics,80,0,0,75,38.75
+AIHub,ML Engineer Intern,"""Python,Scikit-learn,TensorFlow,Machine Learning,Numpy""",Delhi,20000,Varun Joshi,"Python,Machine Learning,TensorFlow,NumPy",B.Tech in Computer Science,AI and ML,80,100,100,100,95
+NextByte,Frontend Intern,"""React.js,HTML,CSS,JavaScript,Redux""",Hyderabad,15000,Sneha Singh,"React,HTML,CSS,JavaScript,Redux",B.Tech in Computer Science,Web Development,100,0,100,100,75
+CloudEdge,Cloud Intern,"""AWS,Python,Docker,Kubernetes,Git""",Pune,20000,Manish Kumar,"AWS,Docker,Python,Kubernetes",B.Tech in Computer Science,Cloud Computing,80,0,100,100,70
+InnovCode,AI Intern,"""Python,Deep Learning,Keras,Pytorch,NLP""",Bangalore,22000,Ananya Mehta,"Python,Machine Learning,TensorFlow,Keras,NLP",B.Tech in Computer Science,AI and ML,80,0,100,100,70
+TechFlow,Full Stack Intern,"""React.js,Node.js,Express,MongoDB,HTML,CSS""",Delhi,15000,Prateek Sharma,"React,Node.js,Express,MongoDB,CSS,HTML",B.Tech in Computer Science,Web Development,100,100,100,100,100
+DataWorks,Data Analyst Intern,"""SQL,Python,Excel,Power BI""",Mumbai,12000,Divya Nair,"SQL,Python,Excel,Power BI",B.Tech in Information Technology,Data Analytics,100,0,0,100,50
+ByteTech,Mobile App Intern,"""Flutter,Dart,UI/UX,Git,Firebase""",Delhi,18000,Rahul Singh,"Flutter,Dart,UI/UX,Firebase",B.Tech in Electronics,Mobile App Development,80,100,0,100,70
+CloudLabs,Cloud Developer Intern,"""AWS,Azure,Docker,Kubernetes,Python""",Pune,22000,Shruti Desai,"AWS,Azure,Docker,Kubernetes,Python",B.Tech in Computer Science,Cloud Computing,100,0,100,100,75
+CodeWorks,Backend Developer Intern,"""Java,Spring Boot,SQL,REST API""",Chennai,15000,Aman Verma,"Java,Spring Boot,MySQL,REST API",B.Tech in Computer Science,Backend Development,75,0,100,100,68.75

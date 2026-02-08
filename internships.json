@@ -1,0 +1,28 @@
+[
+  {
+    "internshipTitle": "web developer",
+    "companyName": "Infotech solution",
+    "location": "Kopargaon",
+    "stipend": 2000,
+    "stream": "IT",
+    "eligibility": ["60% in graduation", "70% in 12th"],
+    "applicationDeadline": "2025-09-30T00:00:00.000Z",
+    "description": "certificate",
+    "skills": ["html", "css", "js"],
+    "createdAt": "2025-09-25T16:59:45.104Z",
+    "updatedAt": "2025-09-25T16:59:45.104Z"
+  },
+  {
+    "internshipTitle": "backend developer",
+    "companyName": "Infotech solution",
+    "location": "pune",
+    "stipend": 3000,
+    "stream": "IT",
+    "eligibility": ["60% in 12th"],
+    "applicationDeadline": "2025-09-30T00:00:00.000Z",
+    "description": "certificate and offer",
+    "skills": ["node.js", "express.js", "mongoDB"],
+    "createdAt": "2025-09-25T17:02:29.075Z",
+    "updatedAt": "2025-09-25T17:02:29.075Z"
+  }
+]
