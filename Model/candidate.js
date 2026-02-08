@@ -1,5 +1,5 @@
 const mongoose=require('mongoose');
-mongoose.connect("mongodb://127.0.0.1:27017/Jobsy")
+mongoose.connect("mongodb+srv://vaibhavsalve645_db_user:e15Mj0cuqyd4gmFE@cluster0.xxxxx.mongodb.net/Jobsy?retryWrites=true&w=majority/Jobsy")
 .then(()=>{console.log("Mongo connected for candidate")})
 .catch((err)=>console.log("error of mongo candidate : ",err))
 const candidateSchema=new mongoose.Schema({
@@ -57,4 +57,5 @@ const candidateSchema=new mongoose.Schema({
     }
 });
 const candidateModel=mongoose.model("candidate",candidateSchema);
+
 module.exports=candidateModel;
