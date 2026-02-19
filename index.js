@@ -1,101 +1,131 @@
 require("dotenv").config();
-const express = require("express");
-const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected Successfully 🚀"))
+  .catch(err => console.log("MongoDB Error:", err));
+
+const express=require("express");
+const path=require("path");
+const jwt = require('jsonwebtoken');
 const cookieParser = require("cookie-parser");
-const cors = require("cors");
-
-const route = require("./Routes/userRoutes");
-const bertRoute = require("./Routes/routes");
-const getData = require("./Routes/getData");
-const applicationRoutes = require("./Routes/applicationRoutes");
-const quizRoutes = require("./Routes/quizRoutes");
-const notificationRoutes = require("./Routes/notificationRoutes");
-const atsRoutes = require("./Routes/atsRoutes");
-const fraudRoutes = require("./Routes/fraudRoutes");
-const pdf = require("./2");
-
-const app = express();
+const route=require("./Routes/userRoutes");
+const bertRoute=require("./Routes/routes");
+const getData=require("./Routes/getData");
+const applicationRoutes=require("./Routes/applicationRoutes");
+const quizRoutes=require("./Routes/quizRoutes");
+const notificationRoutes=require("./Routes/notificationRoutes");
+const pdf=require("./2");
+const app=express();
 const sec = process.env.secret_key;
-
-/* ---------------- MIDDLEWARE ---------------- */
-
-// 🔥 CORS (VERY IMPORTANT)
-app.use(cors({
-    origin: process.env.FRONTEND_URL, // e.g. https://your-frontend.vercel.app
-    credentials: true
-}));
-
+app.use(express.urlencoded({extended:true}));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-/* ---------------- AUTH MIDDLEWARE ---------------- */
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 function validateUser(req, res, next) {
     const token = req.cookies.token;
-
-    if (!token) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
-
+    if (!token) return res.redirect("/login");
     jwt.verify(token, sec, (err, user) => {
         if (err) {
             res.clearCookie("token", {
                 httpOnly: true,
                 secure: true,
-                sameSite: "none"
+                sameSite: "strict"
             });
-            return res.status(403).json({ message: "Invalid token" });
-        }
+            console.log("validation error : ",err);
+            return res.sendStatus(403);
+        };
         req.user = user;
+        console.log("data from token:", user);
+        console.log("user.email :", user.email);
+        console.log("password :",user.password)
         next();
     });
 }
-
 function validateAdmin(req, res, next) {
     const token = req.cookies.token;
-
-    if (!token) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
-
+    if (!token) return res.redirect("/login");
     jwt.verify(token, sec, (err, user) => {
-        if (err) return res.status(403).json({ message: "Invalid token" });
-
-        if (user.email !== process.env.GOV_EMAIL) {
-            return res.status(403).json({ message: "Access Forbidden" });
-        }
-
+        if (err) {
+            res.clearCookie("token", {
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict"
+            });
+            return res.sendStatus(403);
+        };
         req.user = user;
-        next();
+        console.log("data from token:", user);
+        console.log("user.email :", user.email);
+        if(user.email==process.env.GOV_EMAIL)
+        {
+            next();
+        }else{
+            res.sendStatus(403).send("Access Forbidden");
+        }
     });
 }
-
-/* ---------------- AUTH CHECK APIs ---------------- */
-
-// Frontend will call this
-app.get("/api/validate-user", validateUser, (req, res) => {
-    res.json({ success: true, user: req.user });
+app.get("/government.html",validateAdmin,(req,res)=>{
+    res.sendFile(path.join(__dirname, '..', 'Frontend', `government.html`));
+})
+app.get("/candidate.html",validateUser,(req,res)=>{
+    res.sendFile(path.join(__dirname, '..', 'Frontend', `candidate.html`));
+})
+app.get("/cart.html",validateUser,(req,res)=>{
+    res.sendFile(path.join(__dirname, '..', 'Frontend', `cart.html`));
+})
+app.get("/delivery.html",validateUser,(req,res)=>{
+    res.sendFile(path.join(__dirname, '..', 'Frontend', `delivery.html`));
+})
+app.get("/wishlist.html",validateUser,(req,res)=>{
+    res.sendFile(path.join(__dirname, '..', 'Frontend', `wishlist.html`));
+})
+app.get("/profile.html",validateUser,(req,res)=>{
+    res.sendFile(path.join(__dirname, '..', 'Frontend', `profile.html`));
+})
+app.use(express.static(path.join(__dirname, '..','Frontend')));
+app.get("/",(req,res)=>{
+    res.redirect("/index.html");
 });
-
-app.get("/api/validate-admin", validateAdmin, (req, res) => {
-    res.json({ success: true, admin: true });
+app.get("/validateUser",validateUser,(req,res)=>{
+    res.send("success");
+})
+app.get("/admin",(req,res)=>{
+    res.redirect("/admin.html");
+})
+app.use("/api/parse-resume",pdf);
+app.use("/api",route);
+app.use("/bert",bertRoute);
+app.use("/getData",getData)
+app.use("/application",applicationRoutes)
+app.use("/quiz",quizRoutes)
+app.use("/notification",notificationRoutes)
+app.get('/:page', (req, res) => {
+    console.log("hello world");
+    if(req.params.page=="order")
+    {
+        res.redirect("/order.html");
+    }else if(req.params.page=="cart")
+    {
+        res.redirect("/cart.html");
+    }else if(req.params.page=="wishlist")
+    {
+        res.redirect("/wishlist.html");
+    }else if(req.params.page=="delivery")
+    {
+        res.redirect("/delivery.html");
+    }else if(req.params.page=="profile")
+    {
+        res.redirect("/profile.html");
+    }
+    if (req.params.page.includes('.'))
+        {
+            return res.status(404).send('Not found');
+        }
+    res.sendFile(path.join(__dirname, '..','Frontend', `${req.params.page}.html`));
 });
+const PORT = process.env.PORT || 3400;
 
-/* ---------------- API ROUTES ---------------- */
-
-app.use("/api/parse-resume", pdf);
-app.use("/api", route);
-app.use("/bert", bertRoute);
-app.use("/getData", getData);
-app.use("/application", applicationRoutes);
-app.use("/quiz", quizRoutes);
-app.use("/notification", notificationRoutes);
-app.use("/ats", atsRoutes);
-app.use("/api/fraud", fraudRoutes);
-
-/* ---------------- SERVER ---------------- */
-
-app.listen(3400, () => {
-    console.log("Backend running on port 3400 🚀");
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT} 🚀`);
 });
