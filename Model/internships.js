@@ -1,7 +1,4 @@
 const mongoose = require("mongoose");
-mongoose.connect("mongodb+srv://vaibhavsalve645_db_user:e15Mj0cuqyd4gmFE@cluster0.xxxxx.mongodb.net/Jobsy?retryWrites=true&w=majority/Jobsy")
-.then(()=>{console.log("Mongo connected for internships")})
-.catch((err)=>console.log("error of mongo internships : ",err))
 const internshipSchema = new mongoose.Schema(
   {
     internshipTitle: {
@@ -58,3 +55,4 @@ const internshipSchema = new mongoose.Schema(
 const InternshipModel=mongoose.model("Internship", internshipSchema);
 
 module.exports=InternshipModel;
+
