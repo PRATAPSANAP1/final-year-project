@@ -1,9 +1,9 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
-
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected Successfully 🚀"))
   .catch(err => console.log("MongoDB Error:", err));
+const cors = require("cors");
 
 const express=require("express");
 const path=require("path");
@@ -18,6 +18,10 @@ const notificationRoutes=require("./Routes/notificationRoutes");
 const pdf=require("./2");
 const app=express();
 const sec = process.env.secret_key;
+app.use(cors({
+  origin: "https://jobsyhwm.vercel.app",
+  credentials: true
+}));
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cookieParser());
@@ -27,11 +31,12 @@ function validateUser(req, res, next) {
     if (!token) return res.redirect("/login");
     jwt.verify(token, sec, (err, user) => {
         if (err) {
-            res.clearCookie("token", {
-                httpOnly: true,
-                secure: true,
-                sameSite: "strict"
-            });
+           res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,        // required for HTTPS
+    sameSite: "none"     // REQUIRED for cross-origin
+});
+
             console.log("validation error : ",err);
             return res.sendStatus(403);
         };
@@ -47,11 +52,12 @@ function validateAdmin(req, res, next) {
     if (!token) return res.redirect("/login");
     jwt.verify(token, sec, (err, user) => {
         if (err) {
-            res.clearCookie("token", {
-                httpOnly: true,
-                secure: true,
-                sameSite: "strict"
-            });
+           res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,        
+    sameSite: "none"   
+});
+
             return res.sendStatus(403);
         };
         req.user = user;
@@ -129,3 +135,4 @@ const PORT = process.env.PORT || 3400;
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT} 🚀`);
 });
+
