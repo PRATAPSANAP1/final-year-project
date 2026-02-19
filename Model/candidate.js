@@ -1,7 +1,4 @@
 const mongoose=require('mongoose');
-mongoose.connect("mongodb+srv://vaibhavsalve645_db_user:e15Mj0cuqyd4gmFE@cluster0.xxxxx.mongodb.net/Jobsy?retryWrites=true&w=majority/Jobsy")
-.then(()=>{console.log("Mongo connected for candidate")})
-.catch((err)=>console.log("error of mongo candidate : ",err))
 const candidateSchema=new mongoose.Schema({
     Name:{
         type:String,
@@ -59,3 +56,4 @@ const candidateSchema=new mongoose.Schema({
 const candidateModel=mongoose.model("candidate",candidateSchema);
 
 module.exports=candidateModel;
+
