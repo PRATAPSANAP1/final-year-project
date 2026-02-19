@@ -1,9 +1,4 @@
 const mongoose = require("mongoose");
-mongoose.connect("mongodb+srv://vaibhavsalve645_db_user:e15Mj0cuqyd4gmFE@cluster0.xxxxx.mongodb.net/Jobsy?retryWrites=true&w=majority/Jobsy")
-  .then(() => {
-    console.log("Mongo connected for company");
-  })
-  .catch((err) => console.log("error of mongo company : ", err));
 const companySchema = new mongoose.Schema({
   CompanyName: {
     type: String,
@@ -50,3 +45,4 @@ const companySchema = new mongoose.Schema({
 const companyModel = mongoose.model("company", companySchema);
 
 module.exports = companyModel;
+
