@@ -109,12 +109,28 @@ const loginUser = async (req, res) => {
     if (user.Password !== password) {
       return res.status(400).json({ success: false, message: "Invalid credentials" });
     }
-     const token = jwt.sign({ email: email }, sec, { expiresIn: "5h" });
+    const token = jwt.sign({ email: email }, sec, { expiresIn: "5h" });
     res.cookie("token", token, {
       httpOnly: true,
       secure: false,
       sameSite: "strict",
     });
+    
+    // Send login notification email (non-blocking)
+    try {
+      const userName = role === "candidate" ? user.Name : user.CompanyName || "User";
+      const emailHtml = `
+        <h2>Login Notification</h2>
+        <p>Dear ${userName},</p>
+        <p>You have successfully logged in to Jobsy at ${new Date().toLocaleString()}.</p>
+        <p>If this wasn't you, please change your password immediately.</p>
+        <p>Best regards,<br>Jobsy Team</p>
+      `;
+      await sendEmail(email, 'Login Notification - Jobsy', emailHtml);
+    } catch(emailErr) {
+      console.warn('Login email notification failed (non-blocking):', emailErr.message);
+    }
+    
     return res.json({
       success: true,
       message: "Login successful",
