@@ -5,16 +5,28 @@ const jwt = require("jsonwebtoken");
 const sec = process.env.secret_key;
 function validateUser(req, res, next) {
   const token = req.cookies.token;
-  if (!token) return res.redirect(`${process.env.FRONTEND_URL}/register`);
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized - No token"
+    });
+  }
+
   jwt.verify(token, sec, (err, user) => {
     if (err) {
       res.clearCookie("token", {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "none"
       });
-      return res.sendStatus(403);
+
+      return res.status(403).json({
+        success: false,
+        message: "Invalid token"
+      });
     }
+
     req.user = user;
     next();
   });
@@ -36,4 +48,5 @@ router.get("/getContact", handler.getContact);
 router.post("/changeStatus", handler.changeStatus);
 router.post("/deletemesg", handler.deletemesg);
 router.get("/logout", handler.logout);
+
 module.exports = router;
