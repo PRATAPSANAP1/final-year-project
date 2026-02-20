@@ -40,10 +40,10 @@ const addData = async (req, res) => {
     });
     const token = jwt.sign({ email: body.Email }, sec, { expiresIn: "5h" });
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "strict",
-    });
+  httpOnly: true,
+  secure: true,
+  sameSite: "none"
+});
     try{
       const emailHtml=`<h2>Welcome to Jobsy!</h2><p>Dear ${body.Name},</p><p>Your account has been successfully created. Start exploring internship opportunities now!</p><p>Best regards,<br>Jobsy Team</p>`;
       await sendEmail(body.Email,'Welcome to Jobsy',emailHtml);
@@ -71,10 +71,10 @@ const addCompany = async (req, res) => {
     });
     const token = jwt.sign({ email: body.Email }, sec, { expiresIn: "5h" });
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "strict",
-    });
+  httpOnly: true,
+  secure: true,
+  sameSite: "none"
+});
     try{
       const emailHtml=`<h2>Welcome to Jobsy!</h2><p>Dear ${body.CompanyName},</p><p>Your company account has been successfully created. Start posting internship opportunities now!</p><p>Best regards,<br>Jobsy Team</p>`;
       await sendEmail(body.Email,'Welcome to Jobsy',emailHtml);
@@ -111,12 +111,11 @@ const loginUser = async (req, res) => {
     }
     const token = jwt.sign({ email: email }, sec, { expiresIn: "5h" });
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "strict",
-    });
+  httpOnly: true,
+  secure: true,
+  sameSite: "none"
+});
     
-    // Send login notification email (non-blocking)
     try {
       const userName = role === "candidate" ? user.Name : user.CompanyName || "User";
       const emailHtml = `
@@ -226,10 +225,10 @@ const getCustomers=async (req,res)=>{
 }
 const logout=(req,res)=>{
     res.clearCookie("token", {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict"
-    });
+  httpOnly: true,
+  secure: true,
+  sameSite: "none"
+});
     res.redirect("/index");
 }
 const getCandidateByEmail=async(req,res)=>{
@@ -312,3 +311,4 @@ module.exports = {
   updateProfile,
   getCandidateByEmail
 };
+
