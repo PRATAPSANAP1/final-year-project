@@ -22,29 +22,38 @@ app.use(cors({
   origin: "https://jobsyhwm.vercel.app",
   credentials: true
 }));
+
+app.options("*", cors({
+  origin: "https://jobsyhwm.vercel.app",
+  credentials: true
+}));
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 function validateUser(req, res, next) {
     const token = req.cookies.token;
+
     if (!token) {
-    return res.status(401).json({ message: "Unauthorized - No token" });
-}
+        return res.status(401).json({
+            message: "Unauthorized - No token"
+        });
+    }
+
     jwt.verify(token, sec, (err, user) => {
         if (err) {
-           res.cookie("token", token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none"
-});
-            console.log("validation error : ",err);
-            return res.sendStatus(403);
-        };
+            res.clearCookie("token", {
+                httpOnly: true,
+                secure: true,
+                sameSite: "none"
+            });
+
+            return res.status(403).json({
+                message: "Invalid token"
+            });
+        }
+
         req.user = user;
-        console.log("data from token:", user);
-        console.log("user.email :", user.email);
-        console.log("password :",user.password)
         next();
     });
 }
@@ -55,10 +64,14 @@ function validateAdmin(req, res, next) {
 }
     jwt.verify(token, sec, (err, user) => {
         if (err) {
-           res.cookie("token", token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none"
+          res.clearCookie("token", {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none"
+});
+
+return res.status(403).json({
+  message: "Invalid token"
 });
 
             return res.sendStatus(403);
@@ -138,5 +151,6 @@ const PORT = process.env.PORT || 3400;
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT} 🚀`);
 });
+
 
 
